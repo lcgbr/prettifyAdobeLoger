@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin:20px ;
+        }
+
+        th,
+        td {
+            padding: 10px 20px;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body id="body">
+    <textarea name="input" id="input" cols="30" rows="10">
+
+    </textarea>
+    <button onclick=clearLog()>formatar</button>
+ 
+    <script>
+      
+
+        var log = document.getElementById('input')
+        function clearLog() {//trocar nome
+            var aux = log.value.split(/\n/gi);
+            var arrResult = []
+
+            for (var i = 0; i < aux.length; i++) { // CADA LINHA
+              
+
+                var auxArray = [];
+                var nameSpace = [];
+
+                var aux2 = aux[i].substring(aux[i].indexOf('(') + 1).split(/\&/gi);
+                for (var j = 0; j < aux2.length; j++) { // CADA PARAMETRO E VALOR
+
+                    var temp = aux2[j].split('=');
+
+
+
+                    if (temp[0].match(/\w+\.$/gi)) {
+                        nameSpace.push(temp[0])
+                    } else if (temp[0].match(/^\.\w+$/gi)) {
+                        nameSpace.pop();
+                    } else {
+                        auxArray.push([nameSpace.join('') + temp[0], temp[1]])
+                    }
+
+
+                }
+                arrResult.push(auxArray)
+
+
+            }
+            for (let i = 0; i < arrResult.length; i++) {
+                 if(arrResult[i].length===1||arrResult[i].length===2 ){
+                    arrResult.shift() 
+                    
+                    console.log(i)          
+
+                 }
+            } 
+
+                    
+        
+            desenha(arrResult)
+          // console.log(arrResult[0].length)
+           console.log(arrResult)
+           console.log(arrResult[0].length)
+        }
+        
+
+        function desenha(arr) {
+            var table = document.createElement('table')
+        
+
+            for (let i = 0; i < arr.length; i++) {
+                var table = document.createElement('table')
+                var thead= document.createElement('thead')
+                var thChave = document.createElement('th')
+                var thValor = document.createElement('th')
+                var tbody = document.createElement('tbody')
+                tbody.setAttribute('id','tbody')
+                thChave.innerText='Chave'
+                thValor.innerText='Valor'
+                thead.appendChild(thChave)
+                thead.appendChild(thValor)
+                table.appendChild(thead)
+                table.appendChild(tbody)
+                document.getElementById('body').appendChild(table);
+                for (let j = 0; j < arr[i].length; j++) {
+                   var linha = document.createElement('tr') //tr arr[i][j]
+                   var chaveCel =  document.createElement('th')
+                   var valorCel =  document.createElement('th')
+                   var decodedValor= decodeURIComponent(arr[i][j][1])
+                   chaveCel.innerHTML = arr[i][j][0]; 
+                   valorCel.innerHTML = decodedValor;
+                   tbody.appendChild(linha);
+                   linha.appendChild(chaveCel);
+                   linha.appendChild(valorCel);
+                
+
+                }
+              
+            }
+        }
+        desenha()
+
+    </script>
+
+
+
+</body>
+
+</html>
