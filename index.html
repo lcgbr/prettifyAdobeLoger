@@ -5,33 +5,40 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            border-spacing: 0;
-            margin:20px ;
-        }
+    <link rel="shortcut icon" href="./assets/img/lima.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="style.css">
 
-        th,
-        td {
-            padding: 10px 20px;
-            border: 1px solid #000;
-        }
+    <title>Prettify AdobeLoger</title>
+    <style>
+       
     </style>
 </head>
 
 <body id="body">
-    <textarea name="input" id="input" cols="30" rows="10">
+    <header>
+        <img src="./assets/img/lima.png" alt="logo Lima Consulting">
+        <h1><span>Lima</span> Consulting Group</h1>
+    </header>
+    <section>
+        <textarea  class="textarea-log" name="input" id="input" cols="30" rows="10">
 
-    </textarea>
-    <button onclick=clearLog()>formatar</button>
+        </textarea>
+        <a class="input-format" onclick=clearLog()>Formatar</a>
+
+    </section>
+    
  
     <script>
       
 
         var log = document.getElementById('input')
         function clearLog() {//trocar nome
+            let tableExists1 = document.querySelectorAll('.table')
+            console.log(tableExists1)
+            if(tableExists1){ tableExists1.forEach((item)=>{item.parentNode.removeChild(item)})};
+            
             var aux = log.value.split(/\n/gi);
             var arrResult = []
 
@@ -62,11 +69,11 @@
 
 
             }
-            for (let i = 0; i < arrResult.length; i++) {
+         for (let i = 0; i < arrResult.length; i++) {
                  if(arrResult[i].length===1||arrResult[i].length===2 ){
                     arrResult.shift() 
                     
-                    console.log(i)          
+                            
 
                  }
             } 
@@ -74,9 +81,7 @@
                     
         
             desenha(arrResult)
-          // console.log(arrResult[0].length)
-           console.log(arrResult)
-           console.log(arrResult[0].length)
+          
         }
         
 
@@ -91,8 +96,11 @@
                 var thValor = document.createElement('th')
                 var tbody = document.createElement('tbody')
                 tbody.setAttribute('id','tbody')
+                table.setAttribute('class','bordered striped centered highlight responsive-table table')
                 thChave.innerText='Chave'
+                thChave.setAttribute('class','table-head_chave')
                 thValor.innerText='Valor'
+                thValor.setAttribute('class','table-head_valor')
                 thead.appendChild(thChave)
                 thead.appendChild(thValor)
                 table.appendChild(thead)
