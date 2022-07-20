@@ -12,7 +12,7 @@
 
     <title>Prettify AdobeLoger</title>
     <style>
-       
+
     </style>
 </head>
 
@@ -22,28 +22,27 @@
         <h1><span>Lima</span> Consulting Group</h1>
     </header>
     <section>
-        <textarea  class="textarea-log" name="input" id="input" cols="30" rows="10">
+        <textarea class="textarea-log" name="input" id="input" cols="30" rows="10">
 
         </textarea>
         <a class="input-format" onclick=clearLog()>Formatar</a>
 
     </section>
-    
- 
+
+
     <script>
-      
+
 
         var log = document.getElementById('input')
         function clearLog() {//trocar nome
             let tableExists1 = document.querySelectorAll('.table')
-            console.log(tableExists1)
-            if(tableExists1){ tableExists1.forEach((item)=>{item.parentNode.removeChild(item)})};
-            
+            if (tableExists1) { tableExists1.forEach((item) => { item.parentNode.removeChild(item) }) };
+
             var aux = log.value.split(/\n/gi);
             var arrResult = []
 
             for (var i = 0; i < aux.length; i++) { // CADA LINHA
-              
+
 
                 var auxArray = [];
                 var nameSpace = [];
@@ -69,57 +68,51 @@
 
 
             }
-        /*  for (let i = 0; i < arrResult.length; i++) {
-                 if(arrResult[i].length===1||arrResult[i].length===2 ){
-                    arrResult.shift() 
-                    
-                            
+            
+            var filteredArray = arrResult.filter( (element, index, array) => element.length>1)
 
-                 }
-            } */ 
 
-                    
-        
-            desenha(arrResult)
-          
+
+            montaTabela(filteredArray)
+
         }
-        
 
-        function desenha(arr) {
+
+        function montaTabela(arr) {
             var table = document.createElement('table')
-        
+
 
             for (let i = 0; i < arr.length; i++) {
                 var table = document.createElement('table')
-                var thead= document.createElement('thead')
+                var thead = document.createElement('thead')
                 var thChave = document.createElement('th')
                 var thValor = document.createElement('th')
                 var tbody = document.createElement('tbody')
-                tbody.setAttribute('id','tbody')
-                table.setAttribute('class','bordered striped centered highlight responsive-table table')
-                thChave.innerText='Chave'
-                thChave.setAttribute('class','table-head_chave')
-                thValor.innerText='Valor'
-                thValor.setAttribute('class','table-head_valor')
+                tbody.setAttribute('id', 'tbody')
+                table.setAttribute('class', 'bordered striped centered highlight responsive-table table')
+                thChave.innerText = 'Chave'
+                thChave.setAttribute('class', 'table-head_chave')
+                thValor.innerText = 'Valor'
+                thValor.setAttribute('class', 'table-head_valor')
                 thead.appendChild(thChave)
                 thead.appendChild(thValor)
                 table.appendChild(thead)
                 table.appendChild(tbody)
                 document.getElementById('body').appendChild(table);
                 for (let j = 0; j < arr[i].length; j++) {
-                   var linha = document.createElement('tr') //tr arr[i][j]
-                   var chaveCel =  document.createElement('th')
-                   var valorCel =  document.createElement('th')
-                   var decodedValor= decodeURIComponent(arr[i][j][1])
-                   chaveCel.innerHTML = arr[i][j][0]; 
-                   valorCel.innerHTML = decodedValor;
-                   tbody.appendChild(linha);
-                   linha.appendChild(chaveCel);
-                   linha.appendChild(valorCel);
-                
+                    var linha = document.createElement('tr') //tr arr[i][j]
+                    var chaveCel = document.createElement('th')
+                    var valorCel = document.createElement('th')
+                    var decodedValor = decodeURIComponent(arr[i][j][1])
+                    chaveCel.innerHTML = arr[i][j][0];
+                    valorCel.innerHTML = decodedValor;
+                    tbody.appendChild(linha);
+                    linha.appendChild(chaveCel);
+                    linha.appendChild(valorCel);
+
 
                 }
-              
+
             }
         }
         desenha()
