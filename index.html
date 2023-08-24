@@ -25,97 +25,113 @@
         <textarea class="textarea-log" name="input" id="input" cols="30" rows="10">
 
         </textarea>
-        <a class="input-format" onclick=clearLog()>Formatar</a>
+        <a class="input-format" onclick=clearLogTable()>Formatar</a>
 
     </section>
 
 
     <script>
+        var logInput = document.getElementById('input');
 
+        function clearLogTable() {
+            var existingTables = document.querySelectorAll('.table');
+            existingTables.forEach((table) => {
+                table.parentNode.removeChild(table);
+            });
 
-        var log = document.getElementById('input')
-        function clearLog() {//trocar nome
-            let tableExists1 = document.querySelectorAll('.table')
-            if (tableExists1) { tableExists1.forEach((item) => { item.parentNode.removeChild(item) }) };
+            var logLines = logInput.value.split(/\n/gi);
+            var parsedData = parseLogData(logLines);
+            var filteredData = parsedData.filter((element) => element.length > 1);
 
-            var aux = log.value.split(/\n/gi);
-            var arrResult = []
+            renderTables(filteredData);
+        }
 
-            for (var i = 0; i < aux.length; i++) { // CADA LINHA
+        function parseLogData(lines) {
+            var parsedData = [];
 
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                var params = line.substring(line.indexOf('(') + 1).split(/\&/gi);
+                var entry = [];
 
-                var auxArray = [];
-                var nameSpace = [];
+                var namespaceStack = [];
+                for (var j = 0; j < params.length; j++) {
+                    var paramPair = params[j].split('=');
 
-                var aux2 = aux[i].substring(aux[i].indexOf('(') + 1).split(/\&/gi);
-                for (var j = 0; j < aux2.length; j++) { // CADA PARAMETRO E VALOR
-
-                    var temp = aux2[j].split('=');
-
-
-
-                    if (temp[0].match(/\w+\.$/gi)) {
-                        nameSpace.push(temp[0])
-                    } else if (temp[0].match(/^\.\w+$/gi)) {
-                        nameSpace.pop();
+                    if (paramPair[0].match(/\w+\.$/gi)) {
+                        namespaceStack.push(paramPair[0]);
+                    } else if (paramPair[0].match(/^\.\w+$/gi)) {
+                        namespaceStack.pop();
                     } else {
-                        auxArray.push([nameSpace.join('') + temp[0], temp[1]])
+                        entry.push([namespaceStack.join('') + paramPair[0], paramPair[1]]);
                     }
-
-
-                }
-                arrResult.push(auxArray)
-
-
-            }
-            
-            var filteredArray = arrResult.filter( (element, index, array) => element.length>1)
-
-
-
-            montaTabela(filteredArray)
-
-        }
-
-
-        function montaTabela(arr) {
-            var table = document.createElement('table')
-
-
-            for (let i = 0; i < arr.length; i++) {
-                var table = document.createElement('table')
-                var thead = document.createElement('thead')
-                var thChave = document.createElement('th')
-                var thValor = document.createElement('th')
-                var tbody = document.createElement('tbody')
-                tbody.setAttribute('id', 'tbody')
-                table.setAttribute('class', 'bordered striped centered highlight responsive-table table')
-                thChave.innerText = 'Chave'
-                thChave.setAttribute('class', 'table-head_chave')
-                thValor.innerText = 'Valor'
-                thValor.setAttribute('class', 'table-head_valor')
-                thead.appendChild(thChave)
-                thead.appendChild(thValor)
-                table.appendChild(thead)
-                table.appendChild(tbody)
-                document.getElementById('body').appendChild(table);
-                for (let j = 0; j < arr[i].length; j++) {
-                    var linha = document.createElement('tr') //tr arr[i][j]
-                    var chaveCel = document.createElement('th')
-                    var valorCel = document.createElement('th')
-                    var decodedValor = decodeURIComponent(arr[i][j][1])
-                    chaveCel.innerHTML = arr[i][j][0];
-                    valorCel.innerHTML = decodedValor;
-                    tbody.appendChild(linha);
-                    linha.appendChild(chaveCel);
-                    linha.appendChild(valorCel);
-
-
                 }
 
+                parsedData.push(entry);
             }
+
+            return parsedData;
         }
-        desenha()
+
+        function renderTables(dataArray) {
+            var bodyContainer = document.getElementById('body');
+        
+            dataArray.forEach((dataEntry) => {
+                var table = document.createElement('table');
+                table.setAttribute('class', 'bordered striped centered highlight responsive-table table');
+        
+                var thead = document.createElement('thead');
+                var thChave = document.createElement('th');
+                var thValor = document.createElement('th');
+                thChave.innerText = 'Chave';
+                thChave.setAttribute('class', 'table-head_chave');
+                thValor.innerText = 'Valor';
+                thValor.setAttribute('class', 'table-head_valor');
+                thead.appendChild(thChave);
+                thead.appendChild(thValor);
+                table.appendChild(thead);
+        
+                var tbody = document.createElement('tbody');
+                tbody.setAttribute('id', 'tbody');
+                table.appendChild(tbody);
+        
+                dataEntry.forEach((item) => {
+                    var chave = item[0];
+                    var valor = decodeURIComponent(item[1]);
+        
+                    if (chave === 'products') {
+                        var products = valor.split(',');
+                        products.forEach((product,i) => {
+                            var linha = document.createElement('tr');
+                            var chaveCel = document.createElement('th');
+                            var valorCel = document.createElement('th');
+                            chaveCel.innerHTML = `${chave} ${i+1}`;
+                            valorCel.innerHTML = product;
+        
+                            linha.appendChild(chaveCel);
+                            linha.appendChild(valorCel);
+                            tbody.appendChild(linha);
+                        });
+                    } else {
+                        var linha = document.createElement('tr');
+                        var chaveCel = document.createElement('th');
+                        var valorCel = document.createElement('th');
+                        chaveCel.innerHTML = chave;
+                        valorCel.innerHTML = valor;
+        
+                        linha.appendChild(chaveCel);
+                        linha.appendChild(valorCel);
+                        tbody.appendChild(linha);
+                    }
+                });
+        
+                bodyContainer.appendChild(table);
+            });
+        }
+        
+
+       
+
 
     </script>
 
