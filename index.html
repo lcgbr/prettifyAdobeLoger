@@ -73,8 +73,10 @@
             return parsedData;
         }
 
+
         function renderTables(dataArray) {
             var bodyContainer = document.getElementById('body');
+            var jsonOutput = [];
         
             dataArray.forEach((dataEntry) => {
                 var table = document.createElement('table');
@@ -95,17 +97,25 @@
                 tbody.setAttribute('id', 'tbody');
                 table.appendChild(tbody);
         
+                var dataObject = {}; 
+                var productsArray = []; 
+        
                 dataEntry.forEach((item) => {
                     var chave = item[0];
                     var valor = decodeURIComponent(item[1]);
         
                     if (chave === 'products') {
                         var products = valor.split(',');
-                        products.forEach((product,i) => {
+                        products.forEach((product, i) => {
+                            var productKey = `${chave} ${i + 1}`;
+                            var productObject = {};
+                            productObject[productKey] = product;
+                            productsArray.push(productObject);
+                            dataObject[chave] = productsArray; 
                             var linha = document.createElement('tr');
                             var chaveCel = document.createElement('th');
                             var valorCel = document.createElement('th');
-                            chaveCel.innerHTML = `${chave} ${i+1}`;
+                            chaveCel.innerHTML = productKey;
                             valorCel.innerHTML = product;
         
                             linha.appendChild(chaveCel);
@@ -122,15 +132,19 @@
                         linha.appendChild(chaveCel);
                         linha.appendChild(valorCel);
                         tbody.appendChild(linha);
+                        dataObject[chave] = valor; 
                     }
                 });
         
+                jsonOutput.push(dataObject); 
                 bodyContainer.appendChild(table);
             });
-        }
         
+            //console.log(JSON.stringify(jsonOutput, null, 2)); 
+        }
 
-       
+
+
 
 
     </script>
